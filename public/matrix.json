@@ -1,9 +1,9 @@
 {
- "generated": 1795337046,
+ "generated": 1795337512,
  "reports": [
   {
    "mint": "https://8333.space:3338",
-   "at": 1795337028,
+   "at": 1795337495,
    "results": [
     {
      "id": "info",
@@ -121,7 +121,7 @@
   },
   {
    "mint": "https://cashu.mutinynet.com",
-   "at": 1795337030,
+   "at": 1795337497,
    "results": [
     {
      "id": "info",
@@ -239,7 +239,7 @@
   },
   {
    "mint": "https://forge.flashapp.me",
-   "at": 1795337029,
+   "at": 1795337495,
    "results": [
     {
      "id": "info",
@@ -357,7 +357,7 @@
   },
   {
    "mint": "https://mint.agorist.space",
-   "at": 1795337030,
+   "at": 1795337496,
    "results": [
     {
      "id": "info",
@@ -475,7 +475,7 @@
   },
   {
    "mint": "https://mint.cashu.chat",
-   "at": 1795337037,
+   "at": 1795337501,
    "results": [
     {
      "id": "info",
@@ -592,8 +592,126 @@
    ]
   },
   {
+   "mint": "https://mint.coinos.io",
+   "at": 1795337499,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Coinos · Nutshell/0.22.1"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "02fb2009743c0cc2a13309c807ac5c3aa772d9b17241801194e3b938811e6644c1"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "4 keysets, 1 active (sat fee 100ppk)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 64 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "013084a374bffeec6bf1efebb98b06fd0bf49a7db1e3256d5b3f1c7327ecbe610c"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "11000: Invalid invoice"
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "pass",
+     "detail": "proof_state → UNSPENT; unsubscribe OK; unknown kind refused"
+    }
+   ]
+  },
+  {
    "mint": "https://mint.cubabitcoin.org",
-   "at": 1795337030,
+   "at": 1795337497,
    "results": [
     {
      "id": "info",
@@ -711,7 +829,7 @@
   },
   {
    "mint": "https://mint.gitvid.net",
-   "at": 1795337031,
+   "at": 1795337498,
    "results": [
     {
      "id": "info",
@@ -829,7 +947,7 @@
   },
   {
    "mint": "https://mint.hashu.io",
-   "at": 1795337030,
+   "at": 1795337497,
    "results": [
     {
      "id": "info",
@@ -947,7 +1065,7 @@
   },
   {
    "mint": "https://mint.lnvoltz.com",
-   "at": 1795337029,
+   "at": 1795337495,
    "results": [
     {
      "id": "info",
@@ -1065,7 +1183,7 @@
   },
   {
    "mint": "https://mint.macadamia.cash",
-   "at": 1795337033,
+   "at": 1795337500,
    "results": [
     {
      "id": "info",
@@ -1183,7 +1301,7 @@
   },
   {
    "mint": "https://mint.mikelcalvo.net",
-   "at": 1795337045,
+   "at": 1795337505,
    "results": [
     {
      "id": "info",
@@ -1301,7 +1419,7 @@
   },
   {
    "mint": "https://mint.minibits.cash/Bitcoin",
-   "at": 1795337033,
+   "at": 1795337500,
    "results": [
     {
      "id": "info",
@@ -1419,7 +1537,7 @@
   },
   {
    "mint": "https://mint.westernbtc.com",
-   "at": 1795337037,
+   "at": 1795337503,
    "results": [
     {
      "id": "info",
@@ -1537,7 +1655,7 @@
   },
   {
    "mint": "https://testnut.cashu.space",
-   "at": 1795337033,
+   "at": 1795337500,
    "results": [
     {
      "id": "info",
@@ -1685,6 +1803,13 @@
      "title": "checkstate reports the spent proofs as SPENT",
      "verdict": "pass",
      "detail": "3 SPENT"
+    },
+    {
+     "id": "restore-signed",
+     "nut": "09",
+     "title": "Restore returns the very signatures a swap gave, only for outputs the mint signed",
+     "verdict": "pass",
+     "detail": "3 signed outputs restored with the same C_ in order, the never-signed one left out"
     },
     {
      "id": "melt-change",

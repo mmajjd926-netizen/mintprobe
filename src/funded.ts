@@ -167,6 +167,36 @@ export const FUNDED_CHECKS: FundedDef[] = [
     },
   },
   {
+    id: 'restore-signed',
+    nut: '09',
+    title: 'Restore returns the very signatures a swap gave, only for outputs the mint signed',
+    run: async (ctx) => {
+      const st = ctx.funded;
+      if (!st) return { verdict: 'skip', detail: 'no ecash' };
+      if (!ctx.info?.nuts?.['9']?.supported) return { verdict: 'skip', detail: 'NUT-09 not advertised' };
+      const ins = await take(st, 7);
+      const outs = outputs(st, sum(ins) - fee(st, ins.length)); // 7 sat → 4 + 2 + 1, so the order is checked too
+      const sw = await ctx.mint.call('POST', '/v1/swap', { inputs: ins.map(plain), outputs: outs });
+      const got = (sw.response as { signatures?: { C_: string; amount: unknown; id: string }[] })?.signatures;
+      if (sw.status !== 200 || !got) return { verdict: 'skip', detail: `swap failed: ${fmt(sw)}` };
+      // the signed outputs with a never-signed one in the middle: it must be left out, the rest kept in order
+      const stranger = outputs(st, 1)[0];
+      const asked = [...outs.slice(0, 1), stranger, ...outs.slice(1)];
+      const ex = await ctx.mint.call('POST', '/v1/restore', { outputs: asked });
+      const r = ex.response as { outputs?: { B_: string; amount: unknown; id: string }[]; signatures?: { C_: string }[]; promises?: { C_: string }[] };
+      if (ex.status !== 200) return { verdict: 'fail', detail: `restore refused: ${fmt(ex)}` };
+      const sigs = r.signatures ?? r.promises ?? [];
+      const legacy = !r.signatures && r.promises ? ' (answered with the deprecated "promises" field)' : '';
+      const sameOuts = (r.outputs ?? []).map((o) => o.B_).join() === outs.map((o) => o.B_).join();
+      const sameSigs = sigs.map((x) => x.C_).join() === got.map((x) => x.C_).join();
+      if (sameOuts && sameSigs) return { verdict: legacy ? 'warn' : 'pass', detail: `${outs.length} signed outputs restored with the same C_ in order, the never-signed one left out${legacy}` };
+      return {
+        verdict: 'fail',
+        detail: `asked ${asked.length} (${outs.length} signed); got ${r.outputs?.length ?? 0} outputs, ${sigs.length} signatures; outputs ${sameOuts ? 'match' : 'DIFFER'}, signatures ${sameSigs ? 'match' : 'DIFFER'}${legacy}`,
+      };
+    },
+  },
+  {
     id: 'melt-change',
     nut: '05/08',
     title: 'Melt pays an invoice; the unused fee reserve comes back as change',
