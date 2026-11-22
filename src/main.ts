@@ -10,8 +10,10 @@ const ICON: Record<Verdict, string> = { pass: '✓', fail: '✗', warn: '!', ski
 
 function row(r: Result): string {
   const ex = (r.exchange ?? [])
-    .map(
-      (e) => `<div class="ex"><div class="req"><b>${esc(e.method)}</b> ${esc(e.path)}${e.body !== undefined ? `<pre>${esc(JSON.stringify(e.body, null, 1))}</pre>` : ''}</div>
+    .map((e) =>
+      e.method === 'WS'
+        ? `<div class="ex"><div class="req"><b>WS</b> ${esc(e.path)}<pre>${esc(JSON.stringify(e.body ?? e.response, null, 1).slice(0, 4000))}</pre></div></div>`
+        : `<div class="ex"><div class="req"><b>${esc(e.method)}</b> ${esc(e.path)}${e.body !== undefined ? `<pre>${esc(JSON.stringify(e.body, null, 1))}</pre>` : ''}</div>
       <div class="res"><b>HTTP ${e.status}</b><pre>${esc(typeof e.response === 'string' ? e.response.slice(0, 2000) : JSON.stringify(e.response, null, 1).slice(0, 4000))}</pre></div></div>`,
     )
     .join('');
