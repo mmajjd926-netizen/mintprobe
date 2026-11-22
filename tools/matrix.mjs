@@ -2,6 +2,7 @@
 // Usage: node --experimental-strip-types tools/matrix.mjs
 import { writeFileSync } from 'fs';
 import { MintClient, runChecks } from '../src/checks.ts';
+import { runFunded } from '../src/funded.ts';
 const MINTS = [
   'https://testnut.cashu.space', 'https://nofees.testnut.cashu.space', 'https://mint.minibits.cash/Bitcoin', 'https://mint.coinos.io',
   'https://8333.space:3338', 'https://mint.macadamia.cash', 'https://stablenut.umint.cash', 'https://mint.lnvoltz.com',
@@ -11,9 +12,18 @@ const MINTS = [
 ];
 const out = [];
 await Promise.all(MINTS.map(async (url) => {
-  const rep = await runChecks(new MintClient(url, undefined, 12000));
+  const mint = new MintClient(url, undefined, 12000);
+  const ctx = { mint };
+  const rep = await runChecks(mint, undefined, undefined, ctx);
   const info = rep.results.find((r) => r.id === 'info');
   if (info.verdict !== 'pass') { console.log('skip', url, info.detail); return; }
+  // Mints that pay their own invoices (test mints) also get the checks with ecash; others are never paid.
+  const quote = rep.results.find((r) => r.id === 'mint-quote');
+  if (/PAID \(test mint/.test(quote?.detail ?? '') || /testnut/.test(url) || process.env.FUNDED?.split(',').includes(url)) {
+    ctx.waitMs = 8000;
+    const f = await runFunded(ctx);
+    if (f[0]?.verdict === 'pass') rep.results.push(...f);
+  }
   for (const r of rep.results) delete r.exchange;
   out.push(rep);
   console.log(url, rep.results.map((r) => r.verdict[0]).join(''));

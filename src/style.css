@@ -62,3 +62,4 @@ button:disabled { opacity: 0.6; cursor: progress; }
 .inv { background: #0b0f12; border: 1px solid var(--line); border-radius: 6px; padding: 0.6rem; white-space: pre-wrap; word-break: break-all; font-size: 0.75rem; }
 #funded h2 { margin-top: 1.6rem; }
 #fund-go { margin: 0.3rem 0 0.6rem; }
+.mx th.sep { border-left: 3px solid var(--accent); }

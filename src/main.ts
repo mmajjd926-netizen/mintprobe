@@ -1,7 +1,7 @@
 import './style.css';
 import { getEncodedToken } from '@cashu/cashu-ts';
 import { FREE_CHECKS, MintClient, runChecks, type Report, type Result, type Verdict } from './checks';
-import { runFunded, type FundedContext } from './funded';
+import { FUNDED_CHECKS, runFunded, type FundedContext } from './funded';
 
 const esc = (s: unknown) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -85,9 +85,10 @@ async function matrix() {
   const box = $('#matrix');
   try {
     const data: { generated: number; reports: Report[] } = await (await fetch('./matrix.json')).json();
-    const ids = FREE_CHECKS.map((c) => c.id);
+    const all = [...FREE_CHECKS, ...FUNDED_CHECKS];
+    const ids = all.map((c) => c.id);
     $('#known').innerHTML = data.reports.map((r) => `<option value="${esc(r.mint)}"></option>`).join('');
-    const head = FREE_CHECKS.map((c) => `<th title="NUT-${esc(c.nut)}: ${esc(c.title)}"><span>${esc(c.nut)}</span></th>`).join('');
+    const head = all.map((c, i) => `<th class="${i === FREE_CHECKS.length ? 'sep' : ''}" title="NUT-${esc(c.nut)}: ${esc(c.title)}"><span>${esc(c.nut)}</span></th>`).join('');
     const body = data.reports
       .map((r) => {
         const impl = r.results[0]?.detail.split(' · ')[1] ?? '';
@@ -101,7 +102,7 @@ async function matrix() {
       })
       .join('');
     box.innerHTML = `<h2>Public mints today</h2>
-      <p class="note">Free checks only (no ecash moved), run from a server on ${new Date(data.generated * 1000).toUTCString()}. Hover a cell for details; click a mint to run it live from your browser.</p>
+      <p class="note">Free checks for every mint; the columns after the divider move ecash and only run on test mints that pay their own invoices. Run from a server on ${new Date(data.generated * 1000).toUTCString()}. Hover a cell for details; click a mint to run it live from your browser.</p>
       <div class="scroll"><table class="mx"><thead><tr><th></th>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
     box.querySelectorAll<HTMLAnchorElement>('a[data-m]').forEach((a) =>
       a.addEventListener('click', (e) => {

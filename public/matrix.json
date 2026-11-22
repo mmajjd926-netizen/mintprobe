@@ -1,9 +1,9 @@
 {
- "generated": 1795329083,
+ "generated": 1795329516,
  "reports": [
   {
    "mint": "https://8333.space:3338",
-   "at": 1795329073,
+   "at": 1795329507,
    "results": [
     {
      "id": "info",
@@ -114,7 +114,7 @@
   },
   {
    "mint": "https://cashu.mutinynet.com",
-   "at": 1795329075,
+   "at": 1795329510,
    "results": [
     {
      "id": "info",
@@ -225,7 +225,7 @@
   },
   {
    "mint": "https://forge.flashapp.me",
-   "at": 1795329073,
+   "at": 1795329508,
    "results": [
     {
      "id": "info",
@@ -336,7 +336,7 @@
   },
   {
    "mint": "https://mint.agorist.space",
-   "at": 1795329074,
+   "at": 1795329508,
    "results": [
     {
      "id": "info",
@@ -447,7 +447,7 @@
   },
   {
    "mint": "https://mint.cashu.chat",
-   "at": 1795329077,
+   "at": 1795329512,
    "results": [
     {
      "id": "info",
@@ -558,7 +558,7 @@
   },
   {
    "mint": "https://mint.cubabitcoin.org",
-   "at": 1795329074,
+   "at": 1795329509,
    "results": [
     {
      "id": "info",
@@ -669,7 +669,7 @@
   },
   {
    "mint": "https://mint.gitvid.net",
-   "at": 1795329075,
+   "at": 1795329509,
    "results": [
     {
      "id": "info",
@@ -780,7 +780,7 @@
   },
   {
    "mint": "https://mint.hashu.io",
-   "at": 1795329075,
+   "at": 1795329509,
    "results": [
     {
      "id": "info",
@@ -891,7 +891,7 @@
   },
   {
    "mint": "https://mint.lnvoltz.com",
-   "at": 1795329073,
+   "at": 1795329508,
    "results": [
     {
      "id": "info",
@@ -1002,7 +1002,7 @@
   },
   {
    "mint": "https://mint.macadamia.cash",
-   "at": 1795329073,
+   "at": 1795329507,
    "results": [
     {
      "id": "info",
@@ -1113,7 +1113,7 @@
   },
   {
    "mint": "https://mint.mikelcalvo.net",
-   "at": 1795329083,
+   "at": 1795329514,
    "results": [
     {
      "id": "info",
@@ -1224,7 +1224,7 @@
   },
   {
    "mint": "https://mint.minibits.cash/Bitcoin",
-   "at": 1795329073,
+   "at": 1795329507,
    "results": [
     {
      "id": "info",
@@ -1335,7 +1335,7 @@
   },
   {
    "mint": "https://mint.westernbtc.com",
-   "at": 1795329075,
+   "at": 1795329510,
    "results": [
     {
      "id": "info",
@@ -1446,7 +1446,7 @@
   },
   {
    "mint": "https://testnut.cashu.space",
-   "at": 1795329073,
+   "at": 1795329507,
    "results": [
     {
      "id": "info",
@@ -1552,6 +1552,62 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "fund",
+     "nut": "04",
+     "title": "Mint 100 sat of ecash (quote → paid → mint)",
+     "verdict": "pass",
+     "detail": "100 sat in 3 proofs"
+    },
+    {
+     "id": "dleq",
+     "nut": "12",
+     "title": "Every signature comes with a valid DLEQ proof",
+     "verdict": "pass",
+     "detail": "3 of 3 verify"
+    },
+    {
+     "id": "fee-exact",
+     "nut": "02",
+     "title": "Swap fee is exactly ceil(Σ input_fee_ppk / 1000)",
+     "verdict": "pass",
+     "detail": "3 inputs, fee 1 sat; overpay refused with HTTP 400 code 11005 (Transaction is not balanced) \"Inputs: 10, Outputs: 10, expected_fee: 1. Transaction inputs should equal outputs less fee\""
+    },
+    {
+     "id": "double-spend",
+     "nut": "03",
+     "title": "Spending the same proofs twice is refused with 11001",
+     "verdict": "pass",
+     "detail": "HTTP 400 code 11001 (Proofs already spent) \"Token Already Spent\""
+    },
+    {
+     "id": "checkstate-spent",
+     "nut": "07",
+     "title": "checkstate reports the spent proofs as SPENT",
+     "verdict": "pass",
+     "detail": "3 SPENT"
+    },
+    {
+     "id": "p2pk",
+     "nut": "11",
+     "title": "P2PK: locked proofs need the key; with a signature they spend",
+     "verdict": "pass",
+     "detail": "no witness: HTTP 400 code 20008 (Signature for mint request invalid) \"Witness signatures not provided. P2PK signatures are required but not provided\"; wrong key: HTTP 400 code 20008 (Signature for mint request invalid) \"P2PK spend conditions are not met\"; right key: spent (20008 is the NUT-20 mint-quote code; NUT-11 has none of its own)"
+    },
+    {
+     "id": "htlc",
+     "nut": "14",
+     "title": "HTLC: wrong preimage refused, right one spends, NUT-07 returns the witness",
+     "verdict": "pass",
+     "detail": "wrong preimage: HTTP 400 code 50000 \"Preimage does not match\"; right: spent; checkstate witness carries the preimage"
+    },
+    {
+     "id": "htlc-refund",
+     "nut": "14",
+     "title": "HTLC refund after locktime with the refund key alone",
+     "verdict": "fail",
+     "detail": "signature-only refund witness refused: HTTP 400 code 50000 \"Secret is not a HTLC secret\". The same refund with \"preimage\": \"\" passes, so the mint parses a witness without \"preimage\" as P2PK (fixed in CDK main by cashubtc/cdk#2641)."
     }
    ]
   }

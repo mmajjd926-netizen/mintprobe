@@ -15,7 +15,7 @@ import {
 import { secp256k1, schnorr } from '@noble/curves/secp256k1.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { sha256 } from '@noble/hashes/sha2.js';
-import { MintClient, type Context, type Exchange, type Result, type Verdict, ERROR_CODES } from './checks';
+import { MintClient, type Context, type Exchange, type Result, type Verdict, ERROR_CODES } from './checks.ts';
 
 export interface FundedState {
   wallet: Wallet;
