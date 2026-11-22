@@ -1,0 +1,26 @@
+{
+  "name": "nutcheck",
+  "version": "0.1.0",
+  "description": "Is your Cashu mint speaking the NUTs? Conformance checks that run in the browser",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@cashu/cashu-ts": "^4.13.1",
+    "@noble/curves": "^2.4.0",
+    "@noble/hashes": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "happy-dom": "^21.0.4",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
+  },
+  "type": "module"
+}

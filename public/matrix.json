@@ -1,0 +1,1559 @@
+{
+ "generated": 1795329083,
+ "reports": [
+  {
+   "mint": "https://8333.space:3338",
+   "at": 1795329073,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Cashu test mint · Nutshell/0.20.3.1"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "03e3d23e1b66eadaf15ce0d640a908e8ba1984baed34ab98c547aab4cf4249440d"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "warn",
+     "detail": "8 keysets, 4 active (sat fee 100ppk, msat fee 100ppk, usd fee 100ppk, sat fee 100ppk); 2 inactive keyset(s) still listed with pre-V1 base64 ids"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "4 keysets, 256 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "4 of 4 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "00d4cde34fada3fd"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "skip",
+     "detail": "minting disabled"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "10000: Melting with bol11 is disabled."
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://cashu.mutinynet.com",
+   "at": 1795329075,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Cashu mint · Nutshell/0.21.0"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "0394670793f9e1aac8e6860c7b105d59d2c79a65792f809f48cfa832bf3b881f70"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 17, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "1 keysets, 1 active (sat fee 100ppk)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 64 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "011bf7a4c46f2536aead9243660282267ff2a6f5a30694e36c1cf4f2f65a170561"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "0: Bech32 string is not valid."
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://forge.flashapp.me",
+   "at": 1795329073,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Forge · Nutshell/0.22.1"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "024e4944778127cdade5bc670e09aa2b4318c49b6b7940807ef9d2c38ef915d5ab"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "2 keysets, 2 active (sat, usd)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "2 keysets, 128 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "2 of 2 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "0059534ce0bfa19a"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "0: Bech32 string is not valid."
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.agorist.space",
+   "at": 1795329074,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "\"Agorist Cashu Mint\" · Nutshell/0.17.0"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "02fe192cb84704538a5c40dd759c4dbf82f47282dd494b8544c2be314499444372"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 17, 20"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "1 keysets, 1 active (sat)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 64 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "000a93d6f8a1d2c4"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "warn",
+     "detail": "refused with 10003; spec code for a bad signature is 10001"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "fail",
+     "detail": "advertises bolt11 minting but refused a quote: HTTP 400 20000 \"could not fetch bolt11 payment request from backend\""
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "0: Bech32 string is not valid."
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.cashu.chat",
+   "at": 1795329077,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "cashu.chat · Nutshell/0.20.2"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "021bce61ecb2628d96f5fba9b2e640b7c2d2a1c5e20dfdf4dede764ae17c60c872"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 17, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "1 keysets, 1 active (sat)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 64 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "017f7ae9fdd2e8c103ddab808f07b0685058f3a391e0b9345a60c031601bc2be8c"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "0: Bech32 string is not valid."
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.cubabitcoin.org",
+   "at": 1795329074,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Mint Cuba Bitcoin · Nutshell/0.22.1"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "03dce4cc88bdcc2166bf34d2592178df0acd4d72f2f3b2043c64e7761d20355f13"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "3 keysets, 2 active (sat fee 100ppk, usd fee 100ppk)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "2 keysets, 128 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "2 of 2 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "00cadd580ab9ab9a"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "0: Bech32 string is not valid."
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.gitvid.net",
+   "at": 1795329075,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Cashu mint · Nutshell/0.20.1"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "03fdf1e25e49365ed4bbccfd88f07d5c73ef46fe853048ca94f04157a02000b017"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 17, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "1 keysets, 1 active (sat fee 100ppk)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 64 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "012d8af66ea6e3ea8fd9e5ce5568c59d5fd76cbb9f16a45e756747822bb6508eb7"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "0: Bech32 string is not valid."
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.hashu.io",
+   "at": 1795329075,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Hashu · (no version)"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "0359be8791a40c4052526f1ec35ec65fc5101a29dbe43e077364b261938683e080"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 17, 19, 20"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "2 keysets, 1 active (tih)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 41 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "019516987aad0c4edb29dfb0e105b3fc9243254e2575fde39a9125a5d75cf5cff9"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 11005 (Transaction is not balanced)"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1024 tih: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "skip",
+     "detail": "bolt11 melting not advertised"
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.lnvoltz.com",
+   "at": 1795329073,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Voltz Mint · Nutshell/0.20.3"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "0241d9e8b02e75d6e2bcddfc772657a167b302b6d96a96a91be44672a3992a59e9"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "4 keysets, 1 active (sat fee 100ppk)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 64 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "00a551c045e05cbd"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "skip",
+     "detail": "minting disabled"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "0: Bech32 string is not valid."
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.macadamia.cash",
+   "at": 1795329073,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "macadamia Mint · cdk-mintd/0.18.1"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "030b8f63e87420144ccd1e1d76628f8bd5c86e3e5aa6b185445689ee2d746157bb"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "4 keysets, 1 active (sat fee 150ppk)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 32 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "01a13e301f954f716ebdcbe9750b19d9df7e8ce3e883ebcde169fcacd473fc307a"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 11005 (Transaction is not balanced)"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "50000: Invalid payment method"
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.mikelcalvo.net",
+   "at": 1795329083,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "MK Mint · Nutshell/0.22.1"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "023c87c6aa15bb7158fb59661973e73930e4351634fa1b7d56988df8441fa021f2"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "3 keysets, 3 active (sat, sat, msat)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "3 keysets, 192 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "3 of 3 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "003282c3c44fa7e9"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 0"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "0: Bech32 string is not valid."
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.minibits.cash/Bitcoin",
+   "at": 1795329073,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Minibits mint · cdk-mintd/0.18.3"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "03c21ef6f899f661356103552c1945579b0f36f96f9f7d2190ca0cbdab3add4af9"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "3 keysets, 1 active (sat)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 32 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "01fc0ec0e59cd6fa01b7a88f8cd77fce81fd1e64bca67d752e984992b7a3c3a821"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 11005 (Transaction is not balanced)"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "50000: Invalid payment method"
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://mint.westernbtc.com",
+   "at": 1795329075,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "WesternBTC Cashu mint · cdk-mintd/0.17.6"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "03d207829861fcaa86f96258828e8a70e381451941cb4d69d6ef2d93a8d59efbbe"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "2 keysets, 1 active (sat fee 100ppk)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "1 keysets, 64 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "1 of 1 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "009819e0c3337ae1"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 11005 (Transaction is not balanced)"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "50000: Invalid payment method"
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  },
+  {
+   "mint": "https://testnut.cashu.space",
+   "at": 1795329073,
+   "results": [
+    {
+     "id": "info",
+     "nut": "06",
+     "title": "GET /v1/info answers with JSON",
+     "verdict": "pass",
+     "detail": "Testnut mint · cdk-mintd/0.18.1"
+    },
+    {
+     "id": "info-pubkey",
+     "nut": "06",
+     "title": "Mint pubkey is a valid compressed secp256k1 point",
+     "verdict": "pass",
+     "detail": "03b570f51ec78cc4c0843517d2ed16258ba5ee4d9d624bd097faad874db7ba0d0a"
+    },
+    {
+     "id": "info-nuts",
+     "nut": "06",
+     "title": "NUT-04 and NUT-05 settings list methods and a \"disabled\" flag",
+     "verdict": "pass",
+     "detail": "advertises NUT 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 17, 19, 20, 29"
+    },
+    {
+     "id": "keysets",
+     "nut": "02",
+     "title": "GET /v1/keysets lists id, unit, active (and fee)",
+     "verdict": "pass",
+     "detail": "3 keysets, 3 active (usd fee 100ppk, sat fee 100ppk, msat fee 100ppk)"
+    },
+    {
+     "id": "keys",
+     "nut": "01",
+     "title": "GET /v1/keys serves the active keysets, every key a valid point",
+     "verdict": "pass",
+     "detail": "3 keysets, 96 keys"
+    },
+    {
+     "id": "keyset-ids",
+     "nut": "02",
+     "title": "Keyset ids derive from the keys (V1/V2 rules)",
+     "verdict": "pass",
+     "detail": "3 of 3 ids match"
+    },
+    {
+     "id": "keys-by-id",
+     "nut": "01",
+     "title": "GET /v1/keys/{id} returns the same keys",
+     "verdict": "pass",
+     "detail": "010eca897fd3b9d496c4ef28de870727ef616cb0a05404035c65cf5cc6fa879504"
+    },
+    {
+     "id": "keys-unknown",
+     "nut": "02",
+     "title": "Unknown keyset id is refused with code 12001",
+     "verdict": "pass",
+     "detail": "12001 (Keyset is not known)"
+    },
+    {
+     "id": "checkstate-unknown",
+     "nut": "07",
+     "title": "POST /v1/checkstate: a never-seen Y is UNSPENT",
+     "verdict": "pass",
+     "detail": "UNSPENT"
+    },
+    {
+     "id": "checkstate-order",
+     "nut": "07",
+     "title": "checkstate answers in the order asked",
+     "verdict": "pass",
+     "detail": "3 of 3 in order"
+    },
+    {
+     "id": "swap-forged",
+     "nut": "03",
+     "title": "Swap with a forged proof is refused (10001)",
+     "verdict": "pass",
+     "detail": "10001 (Proof verification failed)"
+    },
+    {
+     "id": "swap-unbalanced",
+     "nut": "03",
+     "title": "Error bodies follow NUT-00 {detail, code}",
+     "verdict": "pass",
+     "detail": "HTTP 400, 11005 (Transaction is not balanced)"
+    },
+    {
+     "id": "mint-quote",
+     "nut": "04",
+     "title": "Mint quote (bolt11): quote, request, state, expiry; GET returns it",
+     "verdict": "pass",
+     "detail": "1 sat: state UNPAID"
+    },
+    {
+     "id": "melt-garbage",
+     "nut": "05",
+     "title": "Melt quote for a non-invoice is refused with a NUT-00 error",
+     "verdict": "pass",
+     "detail": "50000: Invalid payment method"
+    },
+    {
+     "id": "restore-unknown",
+     "nut": "09",
+     "title": "Restore of a never-signed output returns nothing",
+     "verdict": "pass",
+     "detail": "empty outputs and signatures"
+    }
+   ]
+  }
+ ]
+}
