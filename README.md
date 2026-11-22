@@ -23,6 +23,7 @@ shows the exact request and response, so a mint operator (or a wallet developer 
 | 04 | A bolt11 mint quote has `quote`, a bolt11 `request`, `state`, `expiry`; GET by id returns it (unit and minimum taken from the mint's own settings) |
 | 05 | A melt quote for a non-invoice is refused with a NUT-00 error |
 | 09 | Restoring a never-signed blinded message returns empty `outputs`/`signatures` |
+| 17 | WebSocket `/v1/ws`: `nuts.17.supported` is a list of `{method, unit, commands}`; subscribing to a fresh mint quote and to a never-seen `Y` is acknowledged `{status: "OK", subId}` and **immediately followed by the current state** (UNPAID / UNSPENT), as the spec's MUST requires; `unsubscribe` answers OK; an unknown `kind` gets a JSON-RPC error. Every frame in and out is shown |
 
 The random points used as fake `Y`, `C` and `B_` are fresh public keys, so nobody knows their discrete log.
 
@@ -68,6 +69,12 @@ shown under the form. First run (22 Nov 2026, 14 reachable mints, Nutshell 0.17â
   old code `10003` instead of `10001`.
 - `8333.space:3338` still lists two inactive keysets with pre-V1 base64 ids.
 - Nutshell answers generic errors with `code: 0`, CDK with `50000`; neither is in the error table.
+- NUT-17 (added later the same day): every CDK mint checked (testnut, Minibits, Macadamia, WesternBTC; cdk-mintd 0.17â€“0.18)
+  acknowledges a `proof_state` subscription for a `Y` it has never seen but sends **no** current-state notification,
+  where Nutshell sends `UNSPENT` at once; NUT-17 says the mint MUST first send the current state, and NUT-07 says an
+  unseen proof is `UNSPENT`. Mint-quote subscriptions work on both. `cashu.mutinynet.com` and `mint.mikelcalvo.net`
+  advertise NUT-17 but `/v1/ws` answers HTTP 404 (checked with a plain upgrade request too), so wallets that prefer
+  websockets there get nothing.
 
 ## Run it
 

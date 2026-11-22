@@ -1,9 +1,9 @@
 {
- "generated": 1795329516,
+ "generated": 1795330989,
  "reports": [
   {
    "mint": "https://8333.space:3338",
-   "at": 1795329507,
+   "at": 1795330968,
    "results": [
     {
      "id": "info",
@@ -109,12 +109,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "pass",
+     "detail": "proof_state → UNSPENT; unsubscribe OK; unknown kind refused"
     }
    ]
   },
   {
    "mint": "https://cashu.mutinynet.com",
-   "at": 1795329510,
+   "at": 1795330970,
    "results": [
     {
      "id": "info",
@@ -220,12 +227,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "fail",
+     "detail": "request failed: websocket wss://cashu.mutinynet.com/v1/ws failed to open"
     }
    ]
   },
   {
    "mint": "https://forge.flashapp.me",
-   "at": 1795329508,
+   "at": 1795330968,
    "results": [
     {
      "id": "info",
@@ -331,12 +345,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "pass",
+     "detail": "bolt11_mint_quote → UNPAID, proof_state → UNSPENT; unsubscribe OK; unknown kind refused"
     }
    ]
   },
   {
    "mint": "https://mint.agorist.space",
-   "at": 1795329508,
+   "at": 1795330969,
    "results": [
     {
      "id": "info",
@@ -442,12 +463,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "pass",
+     "detail": "proof_state → UNSPENT; unsubscribe OK; unknown kind refused"
     }
    ]
   },
   {
    "mint": "https://mint.cashu.chat",
-   "at": 1795329512,
+   "at": 1795330972,
    "results": [
     {
      "id": "info",
@@ -553,12 +581,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "pass",
+     "detail": "bolt11_mint_quote → UNPAID, proof_state → UNSPENT; unsubscribe OK; unknown kind refused"
     }
    ]
   },
   {
    "mint": "https://mint.cubabitcoin.org",
-   "at": 1795329509,
+   "at": 1795330970,
    "results": [
     {
      "id": "info",
@@ -664,12 +699,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "pass",
+     "detail": "bolt11_mint_quote → UNPAID, proof_state → UNSPENT; unsubscribe OK; unknown kind refused"
     }
    ]
   },
   {
    "mint": "https://mint.gitvid.net",
-   "at": 1795329509,
+   "at": 1795330970,
    "results": [
     {
      "id": "info",
@@ -775,12 +817,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "pass",
+     "detail": "bolt11_mint_quote → UNPAID, proof_state → UNSPENT; unsubscribe OK; unknown kind refused"
     }
    ]
   },
   {
    "mint": "https://mint.hashu.io",
-   "at": 1795329509,
+   "at": 1795330969,
    "results": [
     {
      "id": "info",
@@ -886,12 +935,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "skip",
+     "detail": "commands: "
     }
    ]
   },
   {
    "mint": "https://mint.lnvoltz.com",
-   "at": 1795329508,
+   "at": 1795330968,
    "results": [
     {
      "id": "info",
@@ -997,12 +1053,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "pass",
+     "detail": "proof_state → UNSPENT; unsubscribe OK; unknown kind refused"
     }
    ]
   },
   {
    "mint": "https://mint.macadamia.cash",
-   "at": 1795329507,
+   "at": 1795330973,
    "results": [
     {
      "id": "info",
@@ -1108,12 +1171,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "warn",
+     "detail": "bolt11_mint_quote → UNPAID; proof_state: no current-state notification for a proof the mint never saw (NUT-07 calls it UNSPENT; NUT-17: the mint MUST first send the current state)"
     }
    ]
   },
   {
    "mint": "https://mint.mikelcalvo.net",
-   "at": 1795329514,
+   "at": 1795330989,
    "results": [
     {
      "id": "info",
@@ -1219,12 +1289,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "fail",
+     "detail": "request failed: websocket wss://mint.mikelcalvo.net/v1/ws failed to open"
     }
    ]
   },
   {
    "mint": "https://mint.minibits.cash/Bitcoin",
-   "at": 1795329507,
+   "at": 1795330973,
    "results": [
     {
      "id": "info",
@@ -1330,12 +1407,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "warn",
+     "detail": "bolt11_mint_quote → UNPAID; proof_state: no current-state notification for a proof the mint never saw (NUT-07 calls it UNSPENT; NUT-17: the mint MUST first send the current state)"
     }
    ]
   },
   {
    "mint": "https://mint.westernbtc.com",
-   "at": 1795329510,
+   "at": 1795330977,
    "results": [
     {
      "id": "info",
@@ -1441,12 +1525,19 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "warn",
+     "detail": "bolt11_mint_quote → UNPAID; proof_state: no current-state notification for a proof the mint never saw (NUT-07 calls it UNSPENT; NUT-17: the mint MUST first send the current state)"
     }
    ]
   },
   {
    "mint": "https://testnut.cashu.space",
-   "at": 1795329507,
+   "at": 1795330973,
    "results": [
     {
      "id": "info",
@@ -1552,6 +1643,13 @@
      "title": "Restore of a never-signed output returns nothing",
      "verdict": "pass",
      "detail": "empty outputs and signatures"
+    },
+    {
+     "id": "ws-subscribe",
+     "nut": "17",
+     "title": "WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe",
+     "verdict": "warn",
+     "detail": "bolt11_mint_quote → UNPAID; proof_state: no current-state notification for a proof the mint never saw (NUT-07 calls it UNSPENT; NUT-17: the mint MUST first send the current state)"
     },
     {
      "id": "fund",

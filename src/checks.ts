@@ -169,6 +169,63 @@ const supports = (ctx: Context, nut: string) => {
   return !!n && (n.supported === true || Array.isArray(n.methods) || n.supported === undefined);
 };
 
+
+// ---------- NUT-17 websocket helper ----------
+/** A JSON-RPC session on the mint's /v1/ws. Every message in and out is logged as a 'WS' exchange. */
+async function wsSession(ctx: Context, timeoutMs = 8000) {
+  const url = ctx.mint.url.replace(/^http/, 'ws') + '/v1/ws';
+  const WS: typeof WebSocket | undefined = (globalThis as { WebSocket?: typeof WebSocket }).WebSocket;
+  if (!WS) throw new Error('no WebSocket in this environment');
+  const ws = new WS(url);
+  const inbox: any[] = [];
+  const waiters: (() => void)[] = [];
+  ws.onmessage = (m) => {
+    let v: unknown = m.data;
+    try {
+      v = JSON.parse(String(m.data));
+    } catch {
+      /* keep text */
+    }
+    inbox.push(v);
+    ctx.mint.log.push({ method: 'WS', path: '/v1/ws ←', status: 0, response: v });
+    waiters.splice(0).forEach((w) => w());
+  };
+  await new Promise<void>((res, rej) => {
+    const t = setTimeout(() => rej(new Error(`no websocket at ${url} within ${timeoutMs} ms`)), timeoutMs);
+    ws.onopen = () => (clearTimeout(t), res());
+    ws.onerror = () => (clearTimeout(t), rej(new Error(`websocket ${url} failed to open`)));
+  });
+  return {
+    send(msg: unknown) {
+      ctx.mint.log.push({ method: 'WS', path: '/v1/ws →', body: msg, status: 0, response: null });
+      ws.send(JSON.stringify(msg));
+    },
+    /** First message (already received or arriving within the timeout) matching `pred`, removed from the inbox. */
+    async next(pred: (m: any) => boolean, ms = timeoutMs): Promise<any | undefined> {
+      const end = Date.now() + ms;
+      for (;;) {
+        const i = inbox.findIndex((m) => {
+          try {
+            return pred(m);
+          } catch {
+            return false;
+          }
+        });
+        if (i >= 0) return inbox.splice(i, 1)[0];
+        const left = end - Date.now();
+        if (left <= 0) return undefined;
+        await new Promise<void>((r) => {
+          const t = setTimeout(r, left);
+          waiters.push(() => (clearTimeout(t), r()));
+        });
+      }
+    },
+    close: () => ws.close(),
+  };
+}
+
+const randId = () => Math.random().toString(36).slice(2, 10);
+
 export const FREE_CHECKS: CheckDef[] = [
   {
     id: 'info',
@@ -427,6 +484,68 @@ export const FREE_CHECKS: CheckDef[] = [
       return Array.isArray(r.outputs) && Array.isArray(r.signatures) && !r.outputs.length && !r.signatures.length
         ? { verdict: 'pass', detail: 'empty outputs and signatures' }
         : { verdict: 'fail', detail: JSON.stringify(r).slice(0, 120) };
+    },
+  },
+  {
+    id: 'ws-subscribe',
+    nut: '17',
+    title: 'WebSocket: subscribe to a mint quote and a proof state, get the current state at once, unsubscribe',
+    run: async (ctx) => {
+      const n17 = ctx.info?.nuts?.['17'];
+      if (!n17) return { verdict: 'skip', detail: 'NUT-17 not advertised' };
+      const sup = n17.supported;
+      if (!Array.isArray(sup) || !sup.every((x: any) => typeof x?.method === 'string' && typeof x?.unit === 'string' && Array.isArray(x?.commands)))
+        return { verdict: 'fail', detail: 'nuts.17.supported is not a list of { method, unit, commands }' };
+      const cmds = new Set<string>(sup.flatMap((x: any) => x.commands));
+      const n4 = ctx.info?.nuts?.['4'];
+      const canQuote = cmds.has('bolt11_mint_quote') && !n4?.disabled && n4?.methods?.some((m: { method: string; unit?: string }) => m.method === 'bolt11' && m.unit === 'sat');
+      if (!canQuote && !cmds.has('proof_state')) return { verdict: 'skip', detail: `commands: ${[...cmds].join(', ')}` };
+      const s = await wsSession(ctx);
+      const got: string[] = [];
+      const bad: string[] = [];
+      try {
+        const subs: { kind: string; filter: string; ok: (p: any) => boolean; subId: string }[] = [];
+        if (canQuote) {
+          const ex = await ctx.mint.call('POST', '/v1/mint/quote/bolt11', { amount: 1, unit: 'sat' });
+          const q = (ex.response as { quote?: string })?.quote;
+          if (ex.status === 200 && q) subs.push({ kind: 'bolt11_mint_quote', filter: q, subId: randId(), ok: (p) => p?.quote === q && ['UNPAID', 'PAID', 'ISSUED'].includes(p?.state) });
+        }
+        if (cmds.has('proof_state')) {
+          const Y = randomPoint();
+          subs.push({ kind: 'proof_state', filter: Y, subId: randId(), ok: (p) => p?.Y === Y && p?.state === 'UNSPENT' });
+        }
+        if (!subs.length) return { verdict: 'skip', detail: 'could not get a quote to subscribe to' };
+        let rpcId = 0;
+        for (const sub of subs) {
+          const id = rpcId++;
+          s.send({ jsonrpc: '2.0', method: 'subscribe', params: { kind: sub.kind, subId: sub.subId, filters: [sub.filter] }, id });
+          const ack = await s.next((m) => m.id === id);
+          if (!ack) bad.push(`${sub.kind}: no reply to subscribe`);
+          else if (ack.error) bad.push(`${sub.kind}: subscribe refused (${JSON.stringify(ack.error).slice(0, 80)})`);
+          else if (ack.result?.status !== 'OK' || ack.result?.subId !== sub.subId) bad.push(`${sub.kind}: reply is not { status: "OK", subId }`);
+          const note = await s.next((m) => m.method === 'subscribe' && m.params?.subId === sub.subId, 5000);
+          if (!note)
+            bad.push(sub.kind === 'proof_state'
+              ? 'proof_state: no current-state notification for a proof the mint never saw (NUT-07 calls it UNSPENT; NUT-17: the mint MUST first send the current state)'
+              : `${sub.kind}: no notification with the current state`);
+          else if (!sub.ok(note.params.payload)) bad.push(`${sub.kind}: unexpected payload ${JSON.stringify(note.params.payload).slice(0, 80)}`);
+          else got.push(`${sub.kind} → ${note.params.payload.state}`);
+        }
+        // unsubscribe the first one; then an unknown kind must be refused with a JSON-RPC error
+        const uid = rpcId++;
+        s.send({ jsonrpc: '2.0', method: 'unsubscribe', params: { subId: subs[0].subId }, id: uid });
+        const uack = await s.next((m) => m.id === uid);
+        if (!uack || uack.error || uack.result?.status !== 'OK') bad.push(`unsubscribe: ${uack ? JSON.stringify(uack.error ?? uack.result).slice(0, 80) : 'no reply'}`);
+        const eid = rpcId++;
+        s.send({ jsonrpc: '2.0', method: 'subscribe', params: { kind: 'no_such_kind', subId: randId(), filters: ['x'] }, id: eid });
+        const eack = await s.next((m) => m.id === eid);
+        if (!eack) bad.push('unknown kind: no reply');
+        else if (!eack.error) bad.push('unknown kind accepted');
+      } finally {
+        s.close();
+      }
+      if (bad.length) return { verdict: got.length ? 'warn' : 'fail', detail: [...got, ...bad].join('; ') };
+      return { verdict: 'pass', detail: `${got.join(', ')}; unsubscribe OK; unknown kind refused` };
     },
   },
 ];
