@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { MintClient, runChecks } from '../src/checks';
-const LIVE = process.env.NUTCHECK_LIVE === '1';
+const LIVE = (process.env.MINTPROBE_LIVE ?? process.env.NUTCHECK_LIVE) === '1';
 describe.skipIf(!LIVE)('free checks, live', () => {
   for (const url of ['https://testnut.cashu.space', 'https://mint.minibits.cash/Bitcoin']) {
     it(url, async () => {

@@ -1,4 +1,4 @@
-// Nutcheck: conformance checks for a Cashu mint, run from a browser or Node.
+// Mintprobe: conformance checks for a Cashu mint, run from a browser or Node.
 // Every check talks to the mint over plain HTTP and judges the answer against the NUT text, so the
 // verdict doesn't depend on any one wallet library. (cashu-ts is used only to build valid ecash for the
 // funded checks.)

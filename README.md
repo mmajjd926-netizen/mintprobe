@@ -1,6 +1,10 @@
-# 🔬 Nutcheck — does your Cashu mint speak the NUTs?
+# 🔬 Mintprobe — does your Cashu mint speak the NUTs?
 
-**Live: https://mmajjd926-netizen.github.io/nutcheck/**
+**Live: https://mmajjd926-netizen.github.io/mintprobe/**
+
+> **Renamed on 22 Nov 2026 (was "Nutcheck").** [NutCheck](https://nutcheck.org), a mint scorecard by another
+> Nut November builder, had the name first, and two projects with one name only confuse people. Same code, same
+> history; the old links redirect here.
 
 Paste a mint URL, get a conformance report. Each check is written from the text of the
 [NUT specs](https://github.com/cashubtc/nuts), talks to the mint over plain HTTP from your browser and
@@ -8,6 +12,19 @@ shows the exact request and response, so a mint operator (or a wallet developer 
 *why* something fails, not just that it does.
 
 ![A report](docs/report.png)
+
+## Related work
+
+- **[NutCheck](https://nutcheck.org)** grades a fixed set of public mints on a schedule (A to C), keeps the run history
+  and publishes grades on Nostr. It came first and covers much of the same ground (DLEQ, keyset ids, P2PK/HTLC locks,
+  double spends, payouts). Use it to follow how the known mints do over time.
+- **Mintprobe** is the other half of that job: one mint, any URL (including your own `localhost` mint while you
+  develop it), run from your browser, with every request and reply on screen so you can see *why* a check fails.
+  It also covers parts of the spec NutCheck does not test today: NUT-17 subscription behaviour, NUT-19 cached responses,
+  NUT-20 signed mint quotes, SIG_ALL with swapped outputs, 2-of-2 multisig with a repeated signature, and NUT-09
+  restore of real signatures. Its findings so far: [cdk#2980](https://github.com/cashubtc/cdk/issues/2980),
+  [cdk#2981](https://github.com/cashubtc/cdk/issues/2981) with a fix in [cdk#2982](https://github.com/cashubtc/cdk/pull/2982).
+- **[nutlint](https://github.com/pennyops/nutlint)** recomputes the NUT test vectors offline. Mintprobe talks to live mints.
 
 ## What it checks (no ecash needed)
 
@@ -94,7 +111,7 @@ shown under the form. First run (22 Nov 2026, 14 reachable mints, Nutshell 0.17�
 ```
 npm install
 npm run dev                                   # the web page
-NUTCHECK_LIVE=1 npx vitest run                # free checks on testnut and Minibits + all ecash checks on testnut, printed
+MINTPROBE_LIVE=1 npx vitest run                # free checks on testnut and Minibits + all ecash checks on testnut, printed
 node --experimental-strip-types tools/matrix.mjs   # refresh public/matrix.json
 ```
 
