@@ -72,7 +72,8 @@ shown under the form. First run (22 Nov 2026, 14 reachable mints, Nutshell 0.17â
 - NUT-17 (added later the same day): every CDK mint checked (testnut, Minibits, Macadamia, WesternBTC; cdk-mintd 0.17â€“0.18)
   acknowledges a `proof_state` subscription for a `Y` it has never seen but sends **no** current-state notification,
   where Nutshell sends `UNSPENT` at once; NUT-17 says the mint MUST first send the current state, and NUT-07 says an
-  unseen proof is `UNSPENT`. Mint-quote subscriptions work on both. `cashu.mutinynet.com` and `mint.mikelcalvo.net`
+  unseen proof is `UNSPENT`. Mint-quote subscriptions work on both. Cause and one-line fix: [cashubtc/cdk#2981](https://github.com/cashubtc/cdk/issues/2981)
+  (the subscription backfill drops proofs with no DB row; `/v1/checkstate` maps them to `UNSPENT`). `cashu.mutinynet.com` and `mint.mikelcalvo.net`
   advertise NUT-17 but `/v1/ws` answers HTTP 404 (checked with a plain upgrade request too), so wallets that prefer
   websockets there get nothing.
 
