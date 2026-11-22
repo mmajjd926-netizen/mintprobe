@@ -13,7 +13,7 @@ import {
   type Proof,
 } from '@cashu/cashu-ts';
 import { secp256k1, schnorr } from '@noble/curves/secp256k1.js';
-import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
+import { bytesToHex, hexToBytes, utf8ToBytes } from '@noble/hashes/utils.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { MintClient, type Context, type Exchange, type Result, type Verdict, ERROR_CODES } from './checks.ts';
 
@@ -65,6 +65,9 @@ async function take(st: FundedState, amount: number): Promise<Proof[]> {
   st.pool = keep;
   return send;
 }
+
+/** NUT-20: the message signed for a pubkey-locked mint quote is sha256(quote id || B_0 || … || B_n), the B_ as hex strings. */
+export const nut20Digest = (quote: string, outs: { B_: string }[]) => sha256(utf8ToBytes(quote + outs.map((o) => o.B_).join('')));
 
 const newKey = () => {
   const sk = schnorr.utils.randomSecretKey();
@@ -157,6 +160,66 @@ export const FUNDED_CHECKS: FundedDef[] = [
       const ex = await ctx.mint.call('POST', '/v1/checkstate', { Ys: spent.map(Y) });
       const states = (ex.response as { states?: { state: string }[] })?.states ?? [];
       return states.length === spent.length && states.every((s) => s.state === 'SPENT') ? { verdict: 'pass', detail: `${states.length} SPENT` } : { verdict: 'fail', detail: JSON.stringify(states).slice(0, 160) };
+    },
+  },
+  {
+    id: 'nut19-replay',
+    nut: '19',
+    title: 'Replaying the same swap within the TTL returns the cached signatures',
+    run: async (ctx) => {
+      const st = ctx.funded;
+      if (!st) return { verdict: 'skip', detail: 'no ecash' };
+      const n19 = ctx.info?.nuts?.['19'] as { ttl?: number | null; cached_endpoints?: { method: string; path: string }[] } | undefined;
+      const cached = !!n19?.cached_endpoints?.some((e) => e.method === 'POST' && e.path === '/v1/swap');
+      const inputs = await take(st, 4 + fee(st, 3));
+      const body = { inputs: inputs.map(plain), outputs: outputs(st, sum(inputs) - fee(st, inputs.length)) };
+      const first = await ctx.mint.call('POST', '/v1/swap', body);
+      if (first.status !== 200) return { verdict: 'fail', detail: `the swap itself was refused: ${fmt(first)}` };
+      // The same bytes again, as a wallet would resend after a lost response.
+      const again = await ctx.mint.call('POST', '/v1/swap', body);
+      const sigs = (ex: Exchange) => JSON.stringify((ex.response as { signatures?: { C_: string }[] })?.signatures?.map((x) => x.C_) ?? []);
+      if (!cached) {
+        if (again.status === 200) return { verdict: 'warn', detail: 'NUT-19 caching for /v1/swap is not advertised, yet the replay was answered 200' };
+        return { verdict: 'skip', detail: `NUT-19 caching for /v1/swap not advertised; replay: ${fmt(again)}` };
+      }
+      if (again.status !== 200) return { verdict: 'fail', detail: `NUT-19 advertises /v1/swap as cached (ttl ${n19?.ttl ?? 'none'}), but the replay got ${fmt(again)}: a wallet that lost the first response cannot recover its outputs` };
+      return sigs(first) === sigs(again)
+        ? { verdict: 'pass', detail: `replay answered with the same ${inputs.length > 1 ? 'signatures' : 'signature'} (ttl ${n19?.ttl ?? 'none'} s)` }
+        : { verdict: 'fail', detail: 'replay answered 200 but with DIFFERENT signatures for the same outputs' };
+    },
+  },
+  {
+    id: 'nut20-signed-quote',
+    nut: '20',
+    title: 'A mint quote locked to a pubkey mints only with its signature',
+    run: async (ctx) => {
+      const st = ctx.funded;
+      if (!st) return { verdict: 'skip', detail: 'no ecash' };
+      if (!ctx.info?.nuts?.['20']?.supported) return { verdict: 'skip', detail: 'NUT-20 not advertised' };
+      const k = newKey();
+      const q = await ctx.mint.call('POST', '/v1/mint/quote/bolt11', { amount: 4, unit: 'sat', pubkey: k.pk });
+      const quote = q.response as { quote?: string; state?: string; pubkey?: string };
+      if (q.status !== 200 || !quote.quote) return { verdict: 'fail', detail: `a quote with a pubkey was refused: ${fmt(q)}` };
+      let state = quote.state;
+      for (let i = 0; i < 6 && state !== 'PAID'; i++) {
+        await new Promise((r) => setTimeout(r, 1000));
+        state = ((await ctx.mint.call('GET', `/v1/mint/quote/bolt11/${quote.quote}`)).response as { state?: string })?.state;
+      }
+      if (state !== 'PAID') return { verdict: 'skip', detail: 'needs a second paid invoice (runs by itself on test mints that pay their own)' };
+      const outs = outputs(st, 4);
+      const digest = nut20Digest(quote.quote, outs);
+      const none = await ctx.mint.call('POST', '/v1/mint/bolt11', { quote: quote.quote, outputs: outs });
+      if (none.status === 200) return { verdict: 'fail', detail: 'a pubkey-locked quote was minted WITHOUT a signature: anyone who sees the quote id can take the ecash' };
+      const wrong = await ctx.mint.call('POST', '/v1/mint/bolt11', { quote: quote.quote, outputs: outs, signature: bytesToHex(schnorr.sign(digest, schnorr.utils.randomSecretKey())) });
+      if (wrong.status === 200) return { verdict: 'fail', detail: 'a pubkey-locked quote was minted with a signature from the WRONG key' };
+      const ok = await ctx.mint.call('POST', '/v1/mint/bolt11', { quote: quote.quote, outputs: outs, signature: bytesToHex(schnorr.sign(digest, hexToBytes(k.sk))) });
+      if (ok.status !== 200) return { verdict: 'fail', detail: `the right signature was refused: ${fmt(ok)}` };
+      const codes = [none, wrong].map(codeOf);
+      const echo = quote.pubkey === k.pk ? '' : '; the quote response does not echo the pubkey (NUT-20 says it MUST)';
+      return {
+        verdict: codes.every((c) => c === 20008) && !echo ? 'pass' : 'warn',
+        detail: `no signature: ${fmt(none)}; wrong key: ${fmt(wrong)}; right key: minted${codes.every((c) => c === 20008) ? '' : ' (spec code is 20008)'}${echo}`,
+      };
     },
   },
   {

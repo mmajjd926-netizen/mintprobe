@@ -1,9 +1,9 @@
 {
- "generated": 1795330989,
+ "generated": 1795335567,
  "reports": [
   {
    "mint": "https://8333.space:3338",
-   "at": 1795330968,
+   "at": 1795335551,
    "results": [
     {
      "id": "info",
@@ -121,7 +121,7 @@
   },
   {
    "mint": "https://cashu.mutinynet.com",
-   "at": 1795330970,
+   "at": 1795335553,
    "results": [
     {
      "id": "info",
@@ -239,7 +239,7 @@
   },
   {
    "mint": "https://forge.flashapp.me",
-   "at": 1795330968,
+   "at": 1795335551,
    "results": [
     {
      "id": "info",
@@ -357,7 +357,7 @@
   },
   {
    "mint": "https://mint.agorist.space",
-   "at": 1795330969,
+   "at": 1795335552,
    "results": [
     {
      "id": "info",
@@ -475,7 +475,7 @@
   },
   {
    "mint": "https://mint.cashu.chat",
-   "at": 1795330972,
+   "at": 1795335556,
    "results": [
     {
      "id": "info",
@@ -593,7 +593,7 @@
   },
   {
    "mint": "https://mint.cubabitcoin.org",
-   "at": 1795330970,
+   "at": 1795335553,
    "results": [
     {
      "id": "info",
@@ -711,7 +711,7 @@
   },
   {
    "mint": "https://mint.gitvid.net",
-   "at": 1795330970,
+   "at": 1795335554,
    "results": [
     {
      "id": "info",
@@ -829,7 +829,7 @@
   },
   {
    "mint": "https://mint.hashu.io",
-   "at": 1795330969,
+   "at": 1795335553,
    "results": [
     {
      "id": "info",
@@ -947,7 +947,7 @@
   },
   {
    "mint": "https://mint.lnvoltz.com",
-   "at": 1795330968,
+   "at": 1795335551,
    "results": [
     {
      "id": "info",
@@ -1065,7 +1065,7 @@
   },
   {
    "mint": "https://mint.macadamia.cash",
-   "at": 1795330973,
+   "at": 1795335556,
    "results": [
     {
      "id": "info",
@@ -1183,7 +1183,7 @@
   },
   {
    "mint": "https://mint.mikelcalvo.net",
-   "at": 1795330989,
+   "at": 1795335559,
    "results": [
     {
      "id": "info",
@@ -1301,7 +1301,7 @@
   },
   {
    "mint": "https://mint.minibits.cash/Bitcoin",
-   "at": 1795330973,
+   "at": 1795335556,
    "results": [
     {
      "id": "info",
@@ -1419,7 +1419,7 @@
   },
   {
    "mint": "https://mint.westernbtc.com",
-   "at": 1795330977,
+   "at": 1795335560,
    "results": [
     {
      "id": "info",
@@ -1537,7 +1537,7 @@
   },
   {
    "mint": "https://testnut.cashu.space",
-   "at": 1795330973,
+   "at": 1795335556,
    "results": [
     {
      "id": "info",
@@ -1685,6 +1685,20 @@
      "title": "checkstate reports the spent proofs as SPENT",
      "verdict": "pass",
      "detail": "3 SPENT"
+    },
+    {
+     "id": "nut19-replay",
+     "nut": "19",
+     "title": "Replaying the same swap within the TTL returns the cached signatures",
+     "verdict": "pass",
+     "detail": "replay answered with the same signatures (ttl 60 s)"
+    },
+    {
+     "id": "nut20-signed-quote",
+     "nut": "20",
+     "title": "A mint quote locked to a pubkey mints only with its signature",
+     "verdict": "pass",
+     "detail": "no signature: HTTP 400 code 20008 (Signature for mint request invalid) \"Signature missing or invalid\"; wrong key: HTTP 400 code 20008 (Signature for mint request invalid) \"Signature missing or invalid\"; right key: minted"
     },
     {
      "id": "p2pk",

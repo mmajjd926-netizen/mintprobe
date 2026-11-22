@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { errorShape, isPoint, keysetIdV1, keysetIdV2 } from '../src/checks';
+import { nut20Digest } from '../src/funded';
+import { verifyMintQuoteSignature } from '@cashu/cashu-ts';
+import { schnorr, secp256k1 } from '@noble/curves/secp256k1.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 
 describe('spec helpers', () => {
   // NUT-02 test vectors
@@ -33,5 +37,16 @@ describe('spec helpers', () => {
     expect(errorShape(ex(400, { detail: 'x' }))).toMatch(/code/);
     expect(errorShape(ex(500, 'Internal Server Error'))).toMatch(/non-JSON/);
     expect(errorShape(ex(200, {}))).toMatch(/expected an error/);
+  });
+});
+
+describe('NUT-20', () => {
+  it('signs the mint request the way cashu-ts verifies it', () => {
+    const sk = schnorr.utils.randomSecretKey();
+    const pub = bytesToHex(secp256k1.getPublicKey(sk, true));
+    const outs = [{ amount: 4, id: '00ab', B_: '02' + 'a'.repeat(64) }, { amount: 1, id: '00ab', B_: '03' + 'b'.repeat(64) }];
+    const sig = bytesToHex(schnorr.sign(nut20Digest('quote-123', outs), sk));
+    expect(verifyMintQuoteSignature(pub, 'quote-123', outs as never, sig)).toBe(true);
+    expect(verifyMintQuoteSignature(pub, 'quote-124', outs as never, sig)).toBe(false);
   });
 });
