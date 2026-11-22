@@ -47,6 +47,10 @@ On testnut (CDK 0.18.1) everything passes except the last one:
 > signature-only refund witness refused: HTTP 400 code 50000 "Secret is not a HTLC secret". The same refund with
 > `"preimage": ""` passes, so the mint parses a witness without `"preimage"` as P2PK (fixed in CDK main by cashubtc/cdk#2641).
 
+On a local Nutshell 0.20.2 (FakeWallet backend) all eight pass, including the signature-only refund;
+Nutshell reports the unbalanced swap as `11000` and a missing witness as `0` (neither in the error table).
+Reported upstream as [cashubtc/cdk#2980](https://github.com/cashubtc/cdk/issues/2980) (backport request).
+
 That is a real interop break today: cashu-ts signs HTLC refunds without a `preimage`, so refunds fail on
 CDK 0.18.x mints (I hit it building [Nutcache](https://github.com/mmajjd926-netizen/nutcache)). Also visible: CDK
 answers P2PK failures with `20008`, which the error table reserves for NUT-20 mint-quote signatures.
