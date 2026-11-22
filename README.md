@@ -26,6 +26,33 @@ shows the exact request and response, so a mint operator (or a wallet developer 
 
 The random points used as fake `Y`, `C` and `B_` are fresh public keys, so nobody knows their discrete log.
 
+## With ecash ("Run with ecash")
+
+Mints 100 sat and spends it. Test mints (testnut) pay their own invoice, so this runs by itself; on a real
+mint you pay a 100-sat invoice and get what is left back as a token.
+
+| NUT | Check |
+|---|---|
+| 04 | quote → paid → mint 100 sat |
+| 12 | every blind signature carries a DLEQ proof that verifies |
+| 02/03 | the swap fee is exactly `ceil(Σ input_fee_ppk / 1000)`: one sat too much out is refused (`11005`), one too little is refused, the exact swap is signed |
+| 03 | the same inputs again → `11001` |
+| 07 | those inputs now read `SPENT` |
+| 11 | P2PK: no witness refused, a valid Schnorr signature from the *wrong* key refused, the right key spends |
+| 14 | HTLC: a wrong preimage refused, the right one spends, `checkstate` returns the witness with the preimage |
+| 14 | **HTLC refund**: before the locktime the refund key is refused; after it, a signature-only witness (what wallets send) must spend |
+
+On testnut (CDK 0.18.1) everything passes except the last one:
+
+> signature-only refund witness refused: HTTP 400 code 50000 "Secret is not a HTLC secret". The same refund with
+> `"preimage": ""` passes, so the mint parses a witness without `"preimage"` as P2PK (fixed in CDK main by cashubtc/cdk#2641).
+
+That is a real interop break today: cashu-ts signs HTLC refunds without a `preimage`, so refunds fail on
+CDK 0.18.x mints (I hit it building [Nutcache](https://github.com/mmajjd926-netizen/nutcache)). Also visible: CDK
+answers P2PK failures with `20008`, which the error table reserves for NUT-20 mint-quote signatures.
+
+![Checks with ecash on testnut](docs/funded.png)
+
 ## Public mints today
 
 `tools/matrix.mjs` runs the same checks from a server against public mints and writes `public/matrix.json`,
@@ -43,7 +70,7 @@ shown under the form. First run (22 Nov 2026, 14 reachable mints, Nutshell 0.17�
 ```
 npm install
 npm run dev                                   # the web page
-NUTCHECK_LIVE=1 npx vitest run                # checks against testnut and Minibits, printed
+NUTCHECK_LIVE=1 npx vitest run                # free checks on testnut and Minibits + all ecash checks on testnut, printed
 node --experimental-strip-types tools/matrix.mjs   # refresh public/matrix.json
 ```
 

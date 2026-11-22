@@ -58,3 +58,7 @@ button:disabled { opacity: 0.6; cursor: progress; }
 .mx th.m { text-align: left; font-weight: 500; white-space: nowrap; }
 .mx th.m small { display: block; color: var(--dim); font-size: 0.72rem; }
 .mx td.pass { color: var(--pass); } .mx td.fail { color: var(--fail); background: #ff6b6b14; } .mx td.warn { color: var(--warn); background: #f5c45110; } .mx td.skip { color: var(--skip); } .mx td.info { color: var(--info); }
+
+.inv { background: #0b0f12; border: 1px solid var(--line); border-radius: 6px; padding: 0.6rem; white-space: pre-wrap; word-break: break-all; font-size: 0.75rem; }
+#funded h2 { margin-top: 1.6rem; }
+#fund-go { margin: 0.3rem 0 0.6rem; }

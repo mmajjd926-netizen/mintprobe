@@ -1,5 +1,7 @@
 import './style.css';
+import { getEncodedToken } from '@cashu/cashu-ts';
 import { FREE_CHECKS, MintClient, runChecks, type Report, type Result, type Verdict } from './checks';
+import { runFunded, type FundedContext } from './funded';
 
 const esc = (s: unknown) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -32,8 +34,39 @@ async function run(url: string) {
   box.innerHTML = `<h2>${esc(url)}</h2><div id="rows"></div>`;
   const rows = $('#rows');
   try {
-    const rep = await runChecks(new MintClient(url), FREE_CHECKS, (r) => rows.insertAdjacentHTML('beforeend', row(r)));
+    const mint = new MintClient(url);
+    const ctx: FundedContext = { mint };
+    const rep = await runChecks(mint, FREE_CHECKS, (r) => rows.insertAdjacentHTML('beforeend', row(r)), ctx);
     rows.insertAdjacentHTML('beforebegin', summary(rep));
+    if (rep.results[0]?.verdict === 'pass') {
+      rows.insertAdjacentHTML(
+        'afterend',
+        `<div id="funded"><h2>With ecash</h2><p class="note">Mints 100 sat and spends it: DLEQ (NUT-12), exact fees, double spend, SPENT state, P2PK (NUT-11), HTLC and its refund (NUT-14).
+        Test mints pay their own invoice; on a real mint you pay 100 sat and get back what is left (about 85 sat) as a token at the end.</p>
+        <button id="fund-go">Run with ecash</button><div id="invoice"></div><div id="frows"></div><div id="left"></div></div>`,
+      );
+      $('#fund-go').addEventListener('click', async () => {
+        const b = $<HTMLButtonElement>('#fund-go');
+        b.disabled = true;
+        ctx.waitMs = 10 * 60_000;
+        ctx.pay = (inv) => {
+          $('#invoice').innerHTML = `<p class="note">Pay this invoice (100 sat) from any Lightning wallet. Waiting up to 10 minutes…</p><pre class="inv">${esc(inv)}</pre>`;
+        };
+        try {
+          await runFunded(ctx, (r) => {
+            $('#invoice').innerHTML = '';
+            $('#frows').insertAdjacentHTML('beforeend', row(r));
+          });
+          const left = ctx.funded?.pool ?? [];
+          if (left.length && !/testnut/.test(url)) {
+            const t = getEncodedToken({ mint: url, proofs: left });
+            $('#left').innerHTML = `<p class="note">What is left, as a Cashu token (paste it into any wallet):</p><pre class="inv">${esc(t)}</pre>`;
+          }
+        } finally {
+          b.remove();
+        }
+      });
+    }
     const first = rep.results[0];
     if (first?.verdict === 'fail' && /fetch|NetworkError|Failed/i.test(first.detail))
       $('#note').textContent = 'The browser could not reach the mint. Either it is down or it does not send CORS headers (then no web wallet can use it either).';
