@@ -1,9 +1,9 @@
 {
- "generated": 1795336418,
+ "generated": 1795337046,
  "reports": [
   {
    "mint": "https://8333.space:3338",
-   "at": 1795336401,
+   "at": 1795337028,
    "results": [
     {
      "id": "info",
@@ -121,7 +121,7 @@
   },
   {
    "mint": "https://cashu.mutinynet.com",
-   "at": 1795336403,
+   "at": 1795337030,
    "results": [
     {
      "id": "info",
@@ -239,7 +239,7 @@
   },
   {
    "mint": "https://forge.flashapp.me",
-   "at": 1795336401,
+   "at": 1795337029,
    "results": [
     {
      "id": "info",
@@ -357,7 +357,7 @@
   },
   {
    "mint": "https://mint.agorist.space",
-   "at": 1795336402,
+   "at": 1795337030,
    "results": [
     {
      "id": "info",
@@ -475,7 +475,7 @@
   },
   {
    "mint": "https://mint.cashu.chat",
-   "at": 1795336407,
+   "at": 1795337037,
    "results": [
     {
      "id": "info",
@@ -593,7 +593,7 @@
   },
   {
    "mint": "https://mint.cubabitcoin.org",
-   "at": 1795336403,
+   "at": 1795337030,
    "results": [
     {
      "id": "info",
@@ -711,7 +711,7 @@
   },
   {
    "mint": "https://mint.gitvid.net",
-   "at": 1795336404,
+   "at": 1795337031,
    "results": [
     {
      "id": "info",
@@ -829,7 +829,7 @@
   },
   {
    "mint": "https://mint.hashu.io",
-   "at": 1795336403,
+   "at": 1795337030,
    "results": [
     {
      "id": "info",
@@ -947,7 +947,7 @@
   },
   {
    "mint": "https://mint.lnvoltz.com",
-   "at": 1795336401,
+   "at": 1795337029,
    "results": [
     {
      "id": "info",
@@ -1065,7 +1065,7 @@
   },
   {
    "mint": "https://mint.macadamia.cash",
-   "at": 1795336406,
+   "at": 1795337033,
    "results": [
     {
      "id": "info",
@@ -1183,7 +1183,7 @@
   },
   {
    "mint": "https://mint.mikelcalvo.net",
-   "at": 1795336412,
+   "at": 1795337045,
    "results": [
     {
      "id": "info",
@@ -1301,7 +1301,7 @@
   },
   {
    "mint": "https://mint.minibits.cash/Bitcoin",
-   "at": 1795336406,
+   "at": 1795337033,
    "results": [
     {
      "id": "info",
@@ -1419,7 +1419,7 @@
   },
   {
    "mint": "https://mint.westernbtc.com",
-   "at": 1795336410,
+   "at": 1795337037,
    "results": [
     {
      "id": "info",
@@ -1537,7 +1537,7 @@
   },
   {
    "mint": "https://testnut.cashu.space",
-   "at": 1795336406,
+   "at": 1795337033,
    "results": [
     {
      "id": "info",
@@ -1713,6 +1713,20 @@
      "title": "P2PK: locked proofs need the key; with a signature they spend",
      "verdict": "pass",
      "detail": "no witness: HTTP 400 code 20008 (Signature for mint request invalid) \"Witness signatures not provided. P2PK signatures are required but not provided\"; wrong key: HTTP 400 code 20008 (Signature for mint request invalid) \"P2PK spend conditions are not met\"; right key: spent (20008 is the NUT-20 mint-quote code; NUT-11 has none of its own)"
+    },
+    {
+     "id": "p2pk-multisig",
+     "nut": "11",
+     "title": "P2PK 2-of-2: one signature refused, the same signature twice refused, two keys spend",
+     "verdict": "pass",
+     "detail": "one signature: HTTP 400 code 20008 (Signature for mint request invalid) \"P2PK spend conditions are not met\"; same one twice: HTTP 400 code 20008 (Signature for mint request invalid) \"P2PK spend conditions are not met\"; both keys (in reverse order): spent"
+    },
+    {
+     "id": "p2pk-sigall",
+     "nut": "11",
+     "title": "P2PK SIG_ALL: input-only signatures refused, signed outputs cannot be swapped, the right signature spends",
+     "verdict": "pass",
+     "detail": "input-only signatures: HTTP 400 code 20008 (Signature for mint request invalid) \"P2PK spend conditions are not met\"; outputs swapped after signing: HTTP 400 code 20008 (Signature for mint request invalid) \"P2PK spend conditions are not met\"; signed outputs: spent"
     },
     {
      "id": "htlc",

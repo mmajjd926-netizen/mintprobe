@@ -43,6 +43,8 @@ mint you pay a 100-sat invoice and get what is left back as a token.
 | 19 | if the mint lists `/v1/swap` as cached: the very same swap request sent again within the TTL gets the same signatures back, not `11001` (a wallet that lost the response can recover its outputs) |
 | 20 | a mint quote with a `pubkey`: minting without a signature is refused, a Schnorr signature from the wrong key is refused, the right signature over `sha256(quote ‖ B_0 ‖ … ‖ B_n)` mints. Accepting either of the first two would let anyone who sees the quote id take the ecash |
 | 11 | P2PK: no witness refused, a valid Schnorr signature from the *wrong* key refused, the right key spends |
+| 11 | **P2PK 2-of-2** (`pubkeys` + `n_sigs: 2`): one signature refused, the *same* key's signature twice refused (BIP-340 signing is deterministic, so a mint that counts signatures instead of signers would take it), both keys in either order spend |
+| 11 | **P2PK `SIG_ALL`**: signatures over each secret only (as for `SIG_INPUTS`) refused; a valid `SIG_ALL` signature for outputs A sent with outputs B refused (what `SIG_ALL` exists to stop); the right one over `secret‖C` of every input then `amount‖B_` of every output spends. If it is refused, the legacy transcript (`secrets‖B_`) is tried and reported |
 | 14 | HTLC: a wrong preimage refused, the right one spends, `checkstate` returns the witness with the preimage |
 | 14 | **HTLC refund**: before the locktime the refund key is refused; after it, a signature-only witness (what wallets send) must spend |
 
@@ -51,7 +53,11 @@ On testnut (CDK 0.18.1) everything passes except the last one:
 > signature-only refund witness refused: HTTP 400 code 50000 "Secret is not a HTLC secret". The same refund with
 > `"preimage": ""` passes, so the mint parses a witness without `"preimage"` as P2PK (fixed in CDK main by cashubtc/cdk#2641).
 
-Melt, NUT-19 and NUT-20 pass on testnut too. On a local Nutshell 0.20.2 (FakeWallet backend) all pass (NUT-19 is skipped: its cache is off by default), including the signature-only refund;
+Melt, NUT-19, NUT-20, 2-of-2 and `SIG_ALL` pass on testnut too. On a local Nutshell 0.20.2 (FakeWallet backend) all pass (NUT-19 is skipped: its cache is off by default), including the signature-only refund,
+except `SIG_ALL`, which is a **warn**: 0.20.2 only accepts the legacy message (`secrets‖B_`), so a wallet on the current
+spec (cashu-ts 4, CDK ≥ 0.14) cannot spend `SIG_ALL` ecash at such a mint, and a wallet on the old one cannot spend at CDK
+mints. Nutshell 0.21.0 signs the current transcript (`sigall_message_to_sign` in `cashu/core/nuts/nut11.py`), so this is an upgrade-path note rather than a bug: mints still on 0.20.x need the upgrade before their users can use `SIG_ALL`.
+Both mints count signers, not signatures, in the 2-of-2 check;
 Nutshell reports the unbalanced swap as `11000` and a missing witness as `0` (neither in the error table).
 Reported upstream as [cashubtc/cdk#2980](https://github.com/cashubtc/cdk/issues/2980) (backport request).
 

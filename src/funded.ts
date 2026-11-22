@@ -66,6 +66,10 @@ async function take(st: FundedState, amount: number): Promise<Proof[]> {
   return send;
 }
 
+/** NUT-11 SIG_ALL message: secret‖C of every input, then amount‖B_ of every output (the unframed transcript of CDK ≥ 0.14 and Nutshell > 0.20.2). */
+export const sigAllMessage = (ins: { secret: string; C: string }[], outs: { amount: number; B_: string }[], quoteId?: string) =>
+  ins.map((p) => p.secret + p.C).join('') + outs.map((o) => String(o.amount) + o.B_).join('') + (quoteId ?? '');
+
 /** NUT-20: the message signed for a pubkey-locked mint quote is sha256(quote id || B_0 || … || B_n), the B_ as hex strings. */
 export const nut20Digest = (quote: string, outs: { B_: string }[]) => sha256(utf8ToBytes(quote + outs.map((o) => o.B_).join('')));
 
@@ -283,6 +287,70 @@ export const FUNDED_CHECKS: FundedDef[] = [
       const ok = await ctx.mint.call('POST', '/v1/swap', { inputs: signed.map(plain), outputs: outputs(st, sum(send) - f) });
       const note = [bare, w].some((x) => codeOf(x) === 20008) ? ' (20008 is the NUT-20 mint-quote code; NUT-11 has none of its own)' : '';
       return ok.status === 200 ? { verdict: 'pass', detail: `no witness: ${fmt(bare)}; wrong key: ${fmt(w)}; right key: spent${note}` } : { verdict: 'fail', detail: `the right signature was refused: ${fmt(ok)}` };
+    },
+  },
+  {
+    id: 'p2pk-multisig',
+    nut: '11',
+    title: 'P2PK 2-of-2: one signature refused, the same signature twice refused, two keys spend',
+    run: async (ctx) => {
+      const st = ctx.funded;
+      if (!st) return { verdict: 'skip', detail: 'no ecash' };
+      if (!ctx.info?.nuts?.['11']?.supported) return { verdict: 'skip', detail: 'NUT-11 not advertised' };
+      const a = newKey();
+      const b = newKey();
+      const { keep, send } = await st.wallet.ops.send(4, st.pool).asP2PK({ pubkey: [a.pk, b.pk], requiredSignatures: 2 }).includeFees(true).run();
+      st.pool = keep;
+      const f = fee(st, send.length);
+      const sig = (p: Proof, sk: string) => bytesToHex(schnorr.sign(sha256(utf8ToBytes(p.secret)), hexToBytes(sk)));
+      const withSigs = (keys: string[]) => send.map((p) => ({ ...plain(p), witness: JSON.stringify({ signatures: keys.map((k) => sig(p, k)) }) }));
+      const swap = (inputs: unknown[]) => ctx.mint.call('POST', '/v1/swap', { inputs, outputs: outputs(st, sum(send) - f) });
+      const one = await swap(withSigs([a.sk]));
+      if (one.status === 200) return { verdict: 'fail', detail: '2-of-2 proofs spent with ONE signature' };
+      // BIP-340 signing here is deterministic, so the same key twice gives the same signature: a mint must count signers, not signatures.
+      const dup = await swap(withSigs([a.sk, a.sk]));
+      if (dup.status === 200) return { verdict: 'fail', detail: '2-of-2 proofs spent with the SAME key\'s signature twice (signatures counted, not signers)' };
+      const both = await swap(withSigs([b.sk, a.sk]));
+      return both.status === 200
+        ? { verdict: 'pass', detail: `one signature: ${fmt(one)}; same one twice: ${fmt(dup)}; both keys (in reverse order): spent` }
+        : { verdict: 'fail', detail: `two valid signatures were refused: ${fmt(both)}` };
+    },
+  },
+  {
+    id: 'p2pk-sigall',
+    nut: '11',
+    title: 'P2PK SIG_ALL: input-only signatures refused, signed outputs cannot be swapped, the right signature spends',
+    run: async (ctx) => {
+      const st = ctx.funded;
+      if (!st) return { verdict: 'skip', detail: 'no ecash' };
+      if (!ctx.info?.nuts?.['11']?.supported) return { verdict: 'skip', detail: 'NUT-11 not advertised' };
+      const k = newKey();
+      const { keep, send } = await st.wallet.ops.send(4, st.pool).asP2PK({ pubkey: k.pk, sigFlag: 'SIG_ALL' }).includeFees(true).run();
+      st.pool = keep;
+      const f = fee(st, send.length);
+      const outsA = outputs(st, sum(send) - f);
+      const outsB = outputs(st, sum(send) - f); // someone else's outputs, same amounts
+      const sigOn = (msg: string) => bytesToHex(schnorr.sign(sha256(utf8ToBytes(msg)), hexToBytes(k.sk)));
+      const msgFor = (outs: { amount: number; B_: string }[]) => sigAllMessage(send, outs);
+      const witnessed = (sig: string) => send.map((p) => ({ ...plain(p), witness: JSON.stringify({ signatures: [sig] }) }));
+      // 1. signatures over each secret, as for SIG_INPUTS: they do not cover the outputs
+      const inputsOnly = send.map((p) => ({ ...plain(p), witness: JSON.stringify({ signatures: [sigOn(p.secret)] }) }));
+      const r1 = await ctx.mint.call('POST', '/v1/swap', { inputs: inputsOnly, outputs: outsA });
+      if (r1.status === 200) return { verdict: 'fail', detail: 'SIG_ALL proofs spent with SIG_INPUTS signatures (outputs not covered)' };
+      // 2. a valid SIG_ALL signature for outputs A, sent with outputs B: what SIG_ALL exists to stop
+      const sigA = sigOn(msgFor(outsA));
+      const r2 = await ctx.mint.call('POST', '/v1/swap', { inputs: witnessed(sigA), outputs: outsB });
+      if (r2.status === 200) return { verdict: 'fail', detail: 'a SIG_ALL signature for one set of outputs spent the proofs into DIFFERENT outputs' };
+      // 3. the right one
+      const r3 = await ctx.mint.call('POST', '/v1/swap', { inputs: witnessed(sigA), outputs: outsA });
+      const refused = `input-only signatures: ${fmt(r1)}; outputs swapped after signing: ${fmt(r2)}`;
+      if (r3.status === 200) return { verdict: 'pass', detail: `${refused}; signed outputs: spent` };
+      // Older mints (Nutshell ≤ 0.20.2, CDK < 0.14) sign the legacy transcript: every secret, then every B_.
+      const legacy = send.map((p) => p.secret).join('') + outsA.map((o) => o.B_).join('');
+      const r4 = await ctx.mint.call('POST', '/v1/swap', { inputs: witnessed(sigOn(legacy)), outputs: outsA });
+      if (r4.status === 200)
+        return { verdict: 'warn', detail: `the current SIG_ALL message (secret‖C of inputs, amount‖B_ of outputs) was refused: ${fmt(r3)}; the legacy one (secrets‖B_) spends, so wallets on the current spec (cashu-ts 4) cannot spend SIG_ALL ecash here. ${refused}` };
+      return { verdict: 'fail', detail: `the right SIG_ALL signature was refused: ${fmt(r3)}, the legacy transcript too: ${fmt(r4)}` };
     },
   },
   {

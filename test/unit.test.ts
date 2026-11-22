@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { errorShape, isPoint, keysetIdV1, keysetIdV2 } from '../src/checks';
-import { nut20Digest } from '../src/funded';
-import { verifyMintQuoteSignature } from '@cashu/cashu-ts';
+import { nut20Digest, sigAllMessage } from '../src/funded';
+import { SigAll, verifyMintQuoteSignature } from '@cashu/cashu-ts';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { utf8ToBytes } from '@noble/hashes/utils.js';
 import { schnorr, secp256k1 } from '@noble/curves/secp256k1.js';
 import { bytesToHex } from '@noble/hashes/utils.js';
 
@@ -48,5 +50,14 @@ describe('NUT-20', () => {
     const sig = bytesToHex(schnorr.sign(nut20Digest('quote-123', outs), sk));
     expect(verifyMintQuoteSignature(pub, 'quote-123', outs as never, sig)).toBe(true);
     expect(verifyMintQuoteSignature(pub, 'quote-124', outs as never, sig)).toBe(false);
+  });
+  it('builds the NUT-11 SIG_ALL message the way cashu-ts does (v0 transcript)', () => {
+    const ins = [
+      { secret: '["P2PK",{"nonce":"aa","data":"02aa","tags":[["sigflag","SIG_ALL"]]}]', C: '02bb' },
+      { secret: '["P2PK",{"nonce":"ab","data":"02aa","tags":[["sigflag","SIG_ALL"]]}]', C: '03bc' },
+    ];
+    const outs = [{ amount: 2, id: '00ab', B_: '02cc' }, { amount: 4, id: '00ab', B_: '02dd' }];
+    expect(bytesToHex(sha256(utf8ToBytes(sigAllMessage(ins, outs))))).toBe(SigAll.computeDigests(ins, outs as never).v0);
+    expect(bytesToHex(sha256(utf8ToBytes(sigAllMessage(ins, outs, 'q1'))))).toBe(SigAll.computeDigests(ins, outs as never, 'q1').v0);
   });
 });
