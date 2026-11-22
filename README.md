@@ -57,7 +57,9 @@ On testnut (CDK 0.18.1) everything passes except the last one:
 Melt, restore, NUT-19, NUT-20, 2-of-2 and `SIG_ALL` pass on testnut too. On a local Nutshell 0.20.2 (FakeWallet backend) all pass (NUT-19 is skipped: its cache is off by default), including the signature-only refund,
 except `SIG_ALL`, which is a **warn**: 0.20.2 only accepts the legacy message (`secrets‖B_`), so a wallet on the current
 spec (cashu-ts 4, CDK ≥ 0.14) cannot spend `SIG_ALL` ecash at such a mint, and a wallet on the old one cannot spend at CDK
-mints. Nutshell 0.21.0 signs the current transcript (`sigall_message_to_sign` in `cashu/core/nuts/nut11.py`), so this is an upgrade-path note rather than a bug: mints still on 0.20.x need the upgrade before their users can use `SIG_ALL`.
+mints. Nutshell 0.21.0 signs the current transcript (`sigall_message_to_sign` in `cashu/core/nuts/nut11.py`), so this is an upgrade-path note rather than a bug: mints on 0.20.2 or older need the upgrade before their users can use `SIG_ALL` (0.20.3 already has the new one; I checked both wheels).
+By the version in `/v1/info` (read on 22 Nov, not spent against), three of the public mints in the table are on such versions:
+mint.cashu.chat (0.20.2), mint.gitvid.net (0.20.1) and mint.agorist.space (0.17.0).
 Both mints count signers, not signatures, in the 2-of-2 check;
 Nutshell reports the unbalanced swap as `11000` and a missing witness as `0` (neither in the error table).
 Reported upstream as [cashubtc/cdk#2980](https://github.com/cashubtc/cdk/issues/2980) (backport request).
