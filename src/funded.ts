@@ -163,6 +163,44 @@ export const FUNDED_CHECKS: FundedDef[] = [
     },
   },
   {
+    id: 'melt-change',
+    nut: '05/08',
+    title: 'Melt pays an invoice; the unused fee reserve comes back as change',
+    run: async (ctx) => {
+      const st = ctx.funded;
+      if (!st) return { verdict: 'skip', detail: 'no ecash' };
+      if (!ctx.info?.nuts?.['5']?.methods?.some((m: { method: string }) => m.method === 'bolt11')) return { verdict: 'skip', detail: 'bolt11 melting not advertised' };
+      // An invoice from this very mint (a mint quote), so the payment settles inside the mint.
+      const inv = await ctx.mint.call('POST', '/v1/mint/quote/bolt11', { amount: 5, unit: 'sat' });
+      const request = (inv.response as { request?: string })?.request;
+      if (!request) return { verdict: 'skip', detail: `no invoice to pay: ${fmt(inv)}` };
+      const mq = await ctx.mint.call('POST', '/v1/melt/quote/bolt11', { request, unit: 'sat' });
+      const q = mq.response as { quote?: string; amount?: number; fee_reserve?: number };
+      if (mq.status !== 200 || !q.quote || typeof q.amount !== 'number') return { verdict: 'fail', detail: `melt quote refused: ${fmt(mq)}` };
+      if (q.amount !== 5) return { verdict: 'fail', detail: `melt quote for a 5 sat invoice asks ${q.amount} sat` };
+      const reserve = q.fee_reserve ?? 0;
+      const inputs = await take(st, q.amount + reserve + 1); // 1 sat extra on top of the reserve, so change is due either way
+      const over = sum(inputs) - fee(st, inputs.length) - q.amount; // what the mint holds beyond the invoice
+      // NUT-08: blank outputs, ceil(log2(overpaid)) of them (at least 1); their amounts are ignored.
+      const n = Math.max(1, Math.ceil(Math.log2(over)));
+      const blanks = Array.from({ length: n }, () => outputs(st, 1)[0]);
+      const ex = await ctx.mint.call('POST', '/v1/melt/bolt11', { quote: q.quote, inputs: inputs.map(plain), outputs: blanks });
+      const r = ex.response as { state?: string; paid?: boolean; change?: { amount: number }[] };
+      if (ex.status !== 200) return { verdict: 'fail', detail: `melt refused: ${fmt(ex)}` };
+      if (r.state !== 'PAID' && r.paid !== true) return { verdict: 'fail', detail: `melt answered 200 with state ${r.state}` };
+      const change = (r.change ?? []).reduce((a, c) => a + num(c.amount), 0);
+      const powers = (r.change ?? []).every((c) => (num(c.amount) & (num(c.amount) - 1)) === 0 && num(c.amount) > 0);
+      const after = await ctx.mint.call('GET', `/v1/melt/quote/bolt11/${q.quote}`);
+      const later = (after.response as { state?: string })?.state;
+      const note = `invoice 5 sat, reserve ${reserve}, ${sum(inputs)} in (input fee ${fee(st, inputs.length)}), ${n} blank output(s) → change ${change} sat; quote now ${later}`;
+      if (change > over) return { verdict: 'fail', detail: `the mint returned MORE than it held: ${note}` };
+      if (change < over - reserve) return { verdict: 'fail', detail: `change short by ${over - reserve - change} sat beyond the fee reserve: ${note}` };
+      if (!powers) return { verdict: 'fail', detail: `change amounts are not powers of two: ${note}` };
+      if (later !== 'PAID') return { verdict: 'warn', detail: `the quote does not read PAID afterwards: ${note}` };
+      return { verdict: 'pass', detail: note };
+    },
+  },
+  {
     id: 'nut19-replay',
     nut: '19',
     title: 'Replaying the same swap within the TTL returns the cached signatures',

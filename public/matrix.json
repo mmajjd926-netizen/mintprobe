@@ -1,9 +1,9 @@
 {
- "generated": 1795335567,
+ "generated": 1795336418,
  "reports": [
   {
    "mint": "https://8333.space:3338",
-   "at": 1795335551,
+   "at": 1795336401,
    "results": [
     {
      "id": "info",
@@ -121,7 +121,7 @@
   },
   {
    "mint": "https://cashu.mutinynet.com",
-   "at": 1795335553,
+   "at": 1795336403,
    "results": [
     {
      "id": "info",
@@ -239,7 +239,7 @@
   },
   {
    "mint": "https://forge.flashapp.me",
-   "at": 1795335551,
+   "at": 1795336401,
    "results": [
     {
      "id": "info",
@@ -357,7 +357,7 @@
   },
   {
    "mint": "https://mint.agorist.space",
-   "at": 1795335552,
+   "at": 1795336402,
    "results": [
     {
      "id": "info",
@@ -475,7 +475,7 @@
   },
   {
    "mint": "https://mint.cashu.chat",
-   "at": 1795335556,
+   "at": 1795336407,
    "results": [
     {
      "id": "info",
@@ -593,7 +593,7 @@
   },
   {
    "mint": "https://mint.cubabitcoin.org",
-   "at": 1795335553,
+   "at": 1795336403,
    "results": [
     {
      "id": "info",
@@ -711,7 +711,7 @@
   },
   {
    "mint": "https://mint.gitvid.net",
-   "at": 1795335554,
+   "at": 1795336404,
    "results": [
     {
      "id": "info",
@@ -829,7 +829,7 @@
   },
   {
    "mint": "https://mint.hashu.io",
-   "at": 1795335553,
+   "at": 1795336403,
    "results": [
     {
      "id": "info",
@@ -947,7 +947,7 @@
   },
   {
    "mint": "https://mint.lnvoltz.com",
-   "at": 1795335551,
+   "at": 1795336401,
    "results": [
     {
      "id": "info",
@@ -1065,7 +1065,7 @@
   },
   {
    "mint": "https://mint.macadamia.cash",
-   "at": 1795335556,
+   "at": 1795336406,
    "results": [
     {
      "id": "info",
@@ -1183,7 +1183,7 @@
   },
   {
    "mint": "https://mint.mikelcalvo.net",
-   "at": 1795335559,
+   "at": 1795336412,
    "results": [
     {
      "id": "info",
@@ -1301,7 +1301,7 @@
   },
   {
    "mint": "https://mint.minibits.cash/Bitcoin",
-   "at": 1795335556,
+   "at": 1795336406,
    "results": [
     {
      "id": "info",
@@ -1419,7 +1419,7 @@
   },
   {
    "mint": "https://mint.westernbtc.com",
-   "at": 1795335560,
+   "at": 1795336410,
    "results": [
     {
      "id": "info",
@@ -1537,7 +1537,7 @@
   },
   {
    "mint": "https://testnut.cashu.space",
-   "at": 1795335556,
+   "at": 1795336406,
    "results": [
     {
      "id": "info",
@@ -1685,6 +1685,13 @@
      "title": "checkstate reports the spent proofs as SPENT",
      "verdict": "pass",
      "detail": "3 SPENT"
+    },
+    {
+     "id": "melt-change",
+     "nut": "05/08",
+     "title": "Melt pays an invoice; the unused fee reserve comes back as change",
+     "verdict": "pass",
+     "detail": "invoice 5 sat, reserve 1, 8 in (input fee 1), 1 blank output(s) → change 2 sat; quote now PAID"
     },
     {
      "id": "nut19-replay",

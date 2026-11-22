@@ -39,6 +39,7 @@ mint you pay a 100-sat invoice and get what is left back as a token.
 | 02/03 | the swap fee is exactly `ceil(Σ input_fee_ppk / 1000)`: one sat too much out is refused (`11005`), one too little is refused, the exact swap is signed |
 | 03 | the same inputs again → `11001` |
 | 07 | those inputs now read `SPENT` |
+| 05/08 | melt: a melt quote for a 5 sat invoice from the mint itself, paid with inputs above amount + fee reserve and `ceil(log2(overpaid))` blank outputs; the payment reads `PAID` and the change is all of the overpaid sats except what the payment cost (never more, never less than overpaid − reserve), in powers of two |
 | 19 | if the mint lists `/v1/swap` as cached: the very same swap request sent again within the TTL gets the same signatures back, not `11001` (a wallet that lost the response can recover its outputs) |
 | 20 | a mint quote with a `pubkey`: minting without a signature is refused, a Schnorr signature from the wrong key is refused, the right signature over `sha256(quote ‖ B_0 ‖ … ‖ B_n)` mints. Accepting either of the first two would let anyone who sees the quote id take the ecash |
 | 11 | P2PK: no witness refused, a valid Schnorr signature from the *wrong* key refused, the right key spends |
@@ -50,7 +51,7 @@ On testnut (CDK 0.18.1) everything passes except the last one:
 > signature-only refund witness refused: HTTP 400 code 50000 "Secret is not a HTLC secret". The same refund with
 > `"preimage": ""` passes, so the mint parses a witness without `"preimage"` as P2PK (fixed in CDK main by cashubtc/cdk#2641).
 
-NUT-19 and NUT-20 pass on testnut too. On a local Nutshell 0.20.2 (FakeWallet backend) all pass (NUT-19 is skipped: its cache is off by default), including the signature-only refund;
+Melt, NUT-19 and NUT-20 pass on testnut too. On a local Nutshell 0.20.2 (FakeWallet backend) all pass (NUT-19 is skipped: its cache is off by default), including the signature-only refund;
 Nutshell reports the unbalanced swap as `11000` and a missing witness as `0` (neither in the error table).
 Reported upstream as [cashubtc/cdk#2980](https://github.com/cashubtc/cdk/issues/2980) (backport request).
 
