@@ -13,6 +13,12 @@ shows the exact request and response, so a mint operator (or a wallet developer 
 
 ![A report](docs/report.png)
 
+**80-second walkthrough (captioned video):** [watch walkthrough.mp4](https://mmajjd926-netizen.github.io/mintprobe/walkthrough.mp4):
+a real public mint checked without ecash (with the NUT-17 finding opened to its request and reply), then the test mint with ecash
+(P2PK, HTLC, DLEQ, fees, double spends, NUT-19/20, restore) and the matrix of public mints.
+
+[![Mintprobe walkthrough video](docs/walkthrough.jpg)](https://mmajjd926-netizen.github.io/mintprobe/walkthrough.mp4)
+
 ## Related work
 
 - **[NutCheck](https://nutcheck.org)** grades a fixed set of public mints on a schedule (A to C), keeps the run history
